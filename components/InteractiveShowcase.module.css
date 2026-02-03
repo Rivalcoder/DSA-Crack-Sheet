@@ -1,0 +1,220 @@
+.section {
+    padding: 5rem 1rem;
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.flexContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+@media (min-width: 1024px) {
+    .flexContainer {
+        flex-direction: row;
+        align-items: center;
+        gap: 4rem;
+    }
+}
+
+.contentSide {
+    width: 100%;
+    z-index: 10;
+}
+
+@media (min-width: 1024px) {
+    .contentSide {
+        width: 50%;
+    }
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+    .title {
+        font-size: 3rem;
+    }
+}
+
+.description {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.tabContainer {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.tabBtn {
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border: 1px solid transparent;
+    background: var(--bg-card);
+    color: var(--text-muted);
+}
+
+.activeTab {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--shadow-md), var(--glow-primary);
+}
+
+.inactiveTab {
+    border-color: var(--border);
+}
+
+.inactiveTab:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.demoSide {
+    width: 100%;
+    z-index: 10;
+}
+
+@media (min-width: 1024px) {
+    .demoSide {
+        width: 50%;
+    }
+}
+
+.codeWindow {
+    background: #1e1e2e;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.windowHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #262638;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.windowControls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+}
+
+.dotRed {
+    background: #ef4444;
+}
+
+.dotYellow {
+    background: #f59e0b;
+}
+
+.dotGreen {
+    background: #10b981;
+}
+
+.fileName {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.codeArea {
+    padding: 1.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875rem;
+    overflow: hidden;
+    height: 300px;
+    position: relative;
+    background: #1e1e2e;
+}
+
+.codeBlockShell {
+    position: absolute;
+    inset: 0;
+    padding: 1.5rem;
+}
+
+.codeBlock {
+    color: #cbd5e1;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.terminal {
+    background: #181825;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.terminalHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.terminalPrompt {
+    color: var(--success);
+}
+
+.terminalOutput {
+    color: var(--success);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.glowBg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Gradient Text Utility repeated if needed locally or rely on global */
+.textGradient {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

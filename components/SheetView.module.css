@@ -1,0 +1,432 @@
+.wrapper {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1.5rem 4rem;
+}
+
+.progressCard {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-panel) 100%);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition-base);
+}
+
+.progressCard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl), var(--glow-primary);
+}
+
+.progressCard::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.headerRow h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.percentage {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.03em;
+    text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+.track {
+    background: rgba(148, 163, 184, 0.08);
+    height: 20px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fill {
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    background-size: 200% 100%;
+    height: 100%;
+    border-radius: var(--radius-full);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+    border-radius: var(--radius-full);
+}
+
+.stats {
+    text-align: right;
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 2rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.section:hover {
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-md);
+}
+
+.sectionHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-align: left;
+    transition: all var(--transition-base);
+}
+
+.sectionHeader:hover {
+    background: var(--bg-hover);
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.iconBox {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.1));
+    border-radius: var(--radius-md);
+    color: var(--primary-light);
+    transition: all var(--transition-base);
+}
+
+.sectionHeader:hover .iconBox {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: var(--glow-primary);
+}
+
+.sectionContent {
+    border-top: 1px solid var(--border);
+    background: var(--bg-panel);
+    padding: 2rem;
+}
+
+.patternBlock {
+    margin-bottom: 2.5rem;
+}
+
+.patternBlock:last-child {
+    margin-bottom: 0;
+}
+
+.patternTitle {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.25rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--primary);
+    position: relative;
+}
+
+.patternTitle::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--primary), var(--secondary));
+    border-radius: var(--radius-full);
+}
+
+.problemsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+}
+
+.problemCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.problemCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.problemCard:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md), var(--glow-primary);
+}
+
+.problemCard:hover::before {
+    opacity: 1;
+}
+
+.problemCard.completed {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04));
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+.problemCard.completed::before {
+    background: linear-gradient(180deg, var(--success), #059669);
+    opacity: 1;
+}
+
+.problemCard.completed .problemTitle {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+}
+
+.checkBtn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-strong);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: transparent;
+    transition: all var(--transition-base);
+    flex-shrink: 0;
+}
+
+.checkBtn:hover {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+    transform: scale(1.1);
+}
+
+.checkBtn.checked {
+    background: linear-gradient(135deg, var(--success), #059669);
+    border-color: var(--success);
+    color: white;
+    box-shadow: var(--glow-success);
+}
+
+.checkBtn.checked:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.cardContent {
+    flex: 1;
+    margin: 0 1.25rem;
+    overflow: hidden;
+}
+
+.problemTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-bottom: 0.5rem;
+    transition: color var(--transition-base);
+}
+
+.problemTitle:hover {
+    color: var(--primary);
+}
+
+.meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.7rem;
+}
+
+.linkIcon {
+    color: var(--text-dim);
+    transition: all var(--transition-base);
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+}
+
+.linkIcon:hover {
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wrapper {
+        margin: 1rem auto;
+        padding: 0 1rem 3rem;
+    }
+
+    .progressCard {
+        padding: 2rem 1.5rem;
+    }
+
+    .headerRow h2 {
+        font-size: 1.5rem;
+    }
+
+    .percentage {
+        font-size: 2.5rem;
+    }
+
+    .sectionHeader {
+        padding: 1.25rem 1.5rem;
+        font-size: 1.05rem;
+    }
+
+    .sectionContent {
+        padding: 1.5rem;
+    }
+
+    .problemsGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .progressCard {
+        padding: 1.5rem 1rem;
+    }
+
+    .headerRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .percentage {
+        font-size: 2rem;
+    }
+
+    .sectionHeader {
+        padding: 1rem;
+    }
+
+    .sectionContent {
+        padding: 1rem;
+    }
+
+    .problemCard {
+        padding: 1rem;
+    }
+
+    .cardContent {
+        margin: 0 0.75rem;
+    }
+}

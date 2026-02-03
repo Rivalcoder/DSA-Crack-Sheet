@@ -1,0 +1,218 @@
+/* Container */
+.pageContainer {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--bg-app);
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+    .pageContainer {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Graphic Side (New) */
+.graphicSide {
+    display: none;
+    position: relative;
+    background: linear-gradient(135deg, var(--bg-panel), var(--bg-app));
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .graphicSide {
+        display: flex;
+    }
+}
+
+.graphicContent {
+    position: relative;
+    z-index: 10;
+    max-width: 480px;
+    text-align: center;
+}
+
+.graphicTitle {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.graphicText {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Form Side */
+.formSide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.formCard {
+    width: 100%;
+    max-width: 420px;
+    background: transparent;
+    padding: 0;
+}
+
+/* Background Effects for Graphic Side */
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 10s ease-in-out infinite;
+}
+
+.orb1 {
+    width: 300px;
+    height: 300px;
+    top: 20%;
+    left: 20%;
+    background: var(--primary);
+}
+
+.orb2 {
+    width: 250px;
+    height: 250px;
+    bottom: 20%;
+    right: 20%;
+    background: var(--secondary);
+    animation-delay: -5s;
+}
+
+/* Existing Styles Adapted */
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    transition: color var(--transition-base);
+}
+
+.link:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
+}
+
+/* Grid Pattern Overlay */
+.gridPattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    mask-image: linear-gradient(to bottom, transparent, black, transparent);
+    z-index: 1;
+}
+
+/* Form Elements */
+.inputGroup {
+    margin-bottom: 1.5rem;
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all var(--transition-base);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    background: var(--bg-card);
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md), var(--glow-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.submitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--glow-secondary);
+}
+
+.submitBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--error);
+    color: var(--error);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+}
