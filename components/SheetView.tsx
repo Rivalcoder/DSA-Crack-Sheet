@@ -163,7 +163,9 @@ function ProblemCard({ problem }: { problem: Problem }) {
                     {problem.title}
                 </a>
                 <div className={styles.meta}>
-                    <span className={styles.badge}>{problem.difficulty || 'Medium'}</span>
+                    <span className={`${styles.badge} ${styles[problem.difficulty?.toLowerCase() || 'medium']}`}>
+                        {problem.difficulty || 'Medium'}
+                    </span>
                 </div>
             </div>
 
