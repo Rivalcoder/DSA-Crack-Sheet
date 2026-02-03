@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toggleProblem } from '@/app/actions';
-import { Check, ChevronRight, ExternalLink, Hash, Layout, Circle } from 'lucide-react';
+import { Check, ChevronRight, ExternalLink, Hash, Layout, Circle, CheckCircle2 } from 'lucide-react';
 import styles from './SheetView.module.css';
 
 interface Problem {
@@ -29,6 +29,7 @@ export default function SheetView({ data, userName }: { data: Section[], userNam
     const completedProblems = data.reduce((acc, sec) => acc + sec.patterns.reduce((pAcc, pat) => pAcc + pat.problems.filter(p => p.isCompleted).length, 0), 0);
     const progress = totalProblems === 0 ? 0 : (completedProblems / totalProblems) * 100;
 
+    // Improved title cleaner
     const cleanStr = (str: string) => str.replace(/^[\d\sIVXivx]+[:.]\s*/, '').replace(/^Pattern\s*\d*[:\s]*/i, '').trim();
 
     return (
@@ -45,13 +46,20 @@ export default function SheetView({ data, userName }: { data: Section[], userNam
                 <div className={styles.navScroll}>
                     {data.map((section, idx) => {
                         const isActive = activeIdx === idx;
+                        const totalSec = section.patterns.reduce((acc, p) => acc + p.problems.length, 0);
+                        const completedSec = section.patterns.reduce((acc, p) => acc + p.problems.filter(pr => pr.isCompleted).length, 0);
+                        const isFull = totalSec > 0 && totalSec === completedSec;
+
                         return (
                             <button
                                 key={idx}
                                 onClick={() => setActiveIdx(idx)}
                                 className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
                             >
-                                <span className={styles.navText}>{cleanStr(section.title)}</span>
+                                <div className={styles.navContent}>
+                                    <span className={styles.navText}>{cleanStr(section.title)}</span>
+                                    {isFull && <CheckCircle2 size={16} className={styles.completedIcon} />}
+                                </div>
                                 {isActive && <motion.div layoutId="activeInd" className={styles.activeIndicator} />}
                             </button>
                         );
@@ -62,7 +70,7 @@ export default function SheetView({ data, userName }: { data: Section[], userNam
             {/* Main Content */}
             <main className={styles.mainArea}>
 
-                {/* Dashboard Hero: Welcome & Progress */}
+                {/* Dashboard Hero */}
                 <div className={styles.dashboardHero}>
                     <div className={styles.welcomeSection}>
                         <h1>Welcome Back, <span className="text-gradient">{userName}</span></h1>
@@ -144,7 +152,6 @@ function SectionView({ section, cleaner }: { section: Section, cleaner: (s: stri
     );
 }
 
-
 function ProblemRow({ problem }: { problem: Problem }) {
     const [completed, setCompleted] = useState(problem.isCompleted);
     const [isLoading, setIsLoading] = useState(false);
@@ -162,25 +169,70 @@ function ProblemRow({ problem }: { problem: Problem }) {
         setIsLoading(false);
     };
 
+    // Sanitize common URL issues
+    const fixUrl = (url: string) => {
+        if (!url) return "#";
+        let fixed = url.trim();
+
+        // Specific LeetCode fixes
+        if (fixed.includes("leetcode.com")) {
+            // Fix twosum 404
+            fixed = fixed.replace("/twosum", "/two-sum");
+            // Remove trailing slashes for consistency
+            fixed = fixed.replace(/\/$/, "");
+        }
+        return fixed;
+    };
+
+    // Extract platform and potentially problem number
+    const getMeta = (title: string, url: string) => {
+        const platform = url.includes("leetcode.com") ? "LeetCode" :
+            url.includes("geeksforgeeks.org") ? "GFG" :
+                url.includes("codingninjas.com") ? "CN" : null;
+
+        // Try to find a number in the title like "1. Two Sum" or "100. XYZ"
+        const numMatch = title.match(/^(\d+)[.:\s]/);
+        const num = numMatch ? numMatch[1] : null;
+
+        if (!platform) return null;
+        return num ? `${platform} #${num}` : platform;
+    };
+
+    const sanitizedUrl = fixUrl(problem.url);
+    const meta = getMeta(problem.title, sanitizedUrl);
+
     return (
-        <div className={`${styles.problemRow} ${completed ? styles.completed : ''} ${styles[problem.difficulty?.toLowerCase() || 'medium']}`}>
-            <button
-                onClick={handleToggle}
-                className={`${styles.checkbox} ${completed ? styles.checked : ''}`}
-                disabled={isLoading}
-            >
-                {completed && <Check size={14} strokeWidth={4} />}
-            </button>
+        <div className={`${styles.problemRow} ${completed ? styles.completed : ''}`}>
+            <div className={styles.leftGroup}>
+                <button
+                    onClick={handleToggle}
+                    className={`${styles.checkbox} ${completed ? styles.checked : ''}`}
+                    disabled={isLoading}
+                >
+                    {completed && <Check size={14} strokeWidth={4} />}
+                </button>
+                <div className={styles.titleWrapper}>
+                    <a
+                        href={sanitizedUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={styles.problemTitleLink}
+                    >
+                        {problem.title.replace(/^\d+[.:\s]+/, '')}
+                    </a>
+                    {meta && <span className={styles.platformTag}>({meta})</span>}
+                </div>
+            </div>
 
-            <a href={problem.url} target="_blank" rel="noreferrer" className={styles.problemLink}>
-                {problem.title}
-            </a>
+            <div className={styles.rightGroup}>
+                <span className={`${styles.badge} ${styles[problem.difficulty?.toLowerCase() || 'medium']}`}>
+                    {problem.difficulty || 'Medium'}
+                </span>
 
-            <div className={styles.rowMeta}>
-                <span className={styles.difficultyLabel}>{problem.difficulty || 'Medium'}</span>
-                <ExternalLink size={14} className={styles.extIcon} />
+                <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={styles.solveBtn}>
+                    Solve <ExternalLink size={12} />
+                </a>
             </div>
         </div>
     );
 }
-
