@@ -229,8 +229,9 @@ function ProblemRow({ problem }: { problem: Problem }) {
             </div>
 
             <div className={styles.rightGroup}>
-                <span className={`${styles.badge} ${styles[problem.difficulty?.toLowerCase() || 'medium']}`}>
-                    {problem.difficulty || 'Medium'}
+                <span className={`${styles.badge} ${styles[problem.difficulty?.toLowerCase() || 'Medium']}`}>
+                    {/*{problem.difficulty || 'DSA'}*/}
+                    {'DSA'}
                 </span>
 
                 <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={styles.solveBtn}>
