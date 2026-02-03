@@ -37,6 +37,7 @@ async function getData(userId: string): Promise<SheetData[]> {
       }
       sections[secTitle].patterns[patTitle].problems.push({
         _id: p._id.toString(),
+        id: p.problemId,
         title: p.title,
         url: p.url,
         difficulty: p.difficulty,

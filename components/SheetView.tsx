@@ -7,6 +7,7 @@ import styles from './SheetView.module.css';
 
 interface Problem {
     _id: string;
+    id: number;
     title: string;
     url: string;
     difficulty: string;
@@ -185,21 +186,24 @@ function ProblemRow({ problem }: { problem: Problem }) {
     };
 
     // Extract platform and potentially problem number
-    const getMeta = (title: string, url: string) => {
+    const getMeta = (title: string, url: string, dbId?: number) => {
         const platform = url.includes("leetcode.com") ? "LeetCode" :
             url.includes("geeksforgeeks.org") ? "GFG" :
                 url.includes("codingninjas.com") ? "CN" : null;
 
-        // Try to find a number in the title like "1. Two Sum" or "100. XYZ"
-        const numMatch = title.match(/^(\d+)[.:\s]/);
-        const num = numMatch ? numMatch[1] : null;
+        // Use ID from DB if exists and not 0, otherwise detect from title
+        let num: string | number | null = (dbId && dbId !== 0) ? dbId : null;
+        if (!num) {
+            const numMatch = title.match(/^(\d+)[.:\s]/);
+            num = numMatch ? numMatch[1] : null;
+        }
 
         if (!platform) return null;
         return num ? `${platform} #${num}` : platform;
     };
 
     const sanitizedUrl = fixUrl(problem.url);
-    const meta = getMeta(problem.title, sanitizedUrl);
+    const meta = getMeta(problem.title, sanitizedUrl, problem.id);
 
     return (
         <div className={`${styles.problemRow} ${completed ? styles.completed : ''}`}>
