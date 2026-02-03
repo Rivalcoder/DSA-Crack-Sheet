@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toggleProblem } from '@/app/actions';
-import { Check, ChevronDown, ExternalLink, Activity, Layers, Folder } from 'lucide-react';
+import { Check, ChevronRight, ExternalLink, Hash, Layout, Circle } from 'lucide-react';
 import styles from './SheetView.module.css';
 
 interface Problem {
@@ -23,155 +23,164 @@ interface Section {
     patterns: Pattern[];
 }
 
-export default function SheetView({ data }: { data: Section[] }) {
+export default function SheetView({ data, userName }: { data: Section[], userName: string }) {
+    const [activeIdx, setActiveIdx] = useState(0);
     const totalProblems = data.reduce((acc, sec) => acc + sec.patterns.reduce((pAcc, pat) => pAcc + pat.problems.length, 0), 0);
     const completedProblems = data.reduce((acc, sec) => acc + sec.patterns.reduce((pAcc, pat) => pAcc + pat.problems.filter(p => p.isCompleted).length, 0), 0);
     const progress = totalProblems === 0 ? 0 : (completedProblems / totalProblems) * 100;
 
+    const cleanStr = (str: string) => str.replace(/^[\d\sIVXivx]+[:.]\s*/, '').replace(/^Pattern\s*\d*[:\s]*/i, '').trim();
+
     return (
-        <motion.div
-            className={styles.wrapper}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-        >
-            <div className={styles.progressCard}>
-                <div className={styles.headerRow}>
-                    <h2>Your Journey</h2>
-                    <span className={styles.percentage}>{progress.toFixed(0)}%</span>
+        <div className={styles.dashboardContainer}>
+            {/* Sidebar */}
+            <aside className={styles.sidebar}>
+                <div className={styles.sidebarHeader}>
+                    <div className={styles.iconBox}>
+                        <Layout size={20} />
+                    </div>
+                    <span>Course Roadmap</span>
                 </div>
 
-                <div className={styles.track}>
-                    <motion.div
-                        className={styles.fill}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
-                        transition={{ duration: 1, ease: "circOut" }}
-                    />
+                <div className={styles.navScroll}>
+                    {data.map((section, idx) => {
+                        const isActive = activeIdx === idx;
+                        return (
+                            <button
+                                key={idx}
+                                onClick={() => setActiveIdx(idx)}
+                                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+                            >
+                                <span className={styles.navText}>{cleanStr(section.title)}</span>
+                                {isActive && <motion.div layoutId="activeInd" className={styles.activeIndicator} />}
+                            </button>
+                        );
+                    })}
                 </div>
-                <div className={styles.stats}>
-                    {completedProblems} of {totalProblems} problems conquered
-                </div>
-            </div>
+            </aside>
 
-            <div className={styles.list}>
-                {data.map((section, idx) => (
-                    <SectionView key={idx} section={section} index={idx} />
-                ))}
-            </div>
-        </motion.div>
+            {/* Main Content */}
+            <main className={styles.mainArea}>
+
+                {/* Dashboard Hero: Welcome & Progress */}
+                <div className={styles.dashboardHero}>
+                    <div className={styles.welcomeSection}>
+                        <h1>Welcome Back, <span className="text-gradient">{userName}</span></h1>
+                        <p>Let's continue your journey to mastery.</p>
+                    </div>
+
+                    <div className={styles.progressRingWrapper}>
+                        <div className={styles.statItem}>
+                            <span className={styles.statVal}>{completedProblems}</span>
+                            <span className={styles.statLabel}>Solved</span>
+                        </div>
+
+                        <div className={styles.ringContainer}>
+                            <svg className={styles.progressSvg} viewBox="0 0 100 100">
+                                <circle className={styles.bgCircle} cx="50" cy="50" r="45" />
+                                <circle
+                                    className={styles.fgCircle}
+                                    cx="50" cy="50" r="45"
+                                    strokeDasharray={`${progress * 2.83} 283`}
+                                />
+                            </svg>
+                            <div className={styles.ringText}>
+                                <span className={styles.percentText}>{Math.round(progress)}%</span>
+                            </div>
+                        </div>
+
+                        <div className={styles.statItem}>
+                            <span className={styles.statVal}>{totalProblems - completedProblems}</span>
+                            <span className={styles.statLabel}>Remaining</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Active Section Content */}
+                <div className={styles.contentWrapper}>
+                    <AnimatePresence mode='wait'>
+                        <motion.div
+                            key={activeIdx}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <SectionView section={data[activeIdx]} cleaner={cleanStr} />
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </main>
+        </div>
     );
 }
 
-function SectionView({ section, index }: { section: Section, index: number }) {
-    const [isOpen, setIsOpen] = useState(index === 0); // Open first one by default
-
+function SectionView({ section, cleaner }: { section: Section, cleaner: (s: string) => string }) {
     return (
-        <motion.div
-            className={styles.section}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-        >
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className={styles.sectionHeader}
-            >
-                <div className={styles.sectionTitle}>
-                    <div className={styles.iconBox}>
-                        <Folder size={18} />
-                    </div>
-                    <span>{section.title}</span>
+        <div className={styles.sectionContainer}>
+            <div className={styles.sectionHeader}>
+                <div className={styles.titleGroup}>
+                    <h2>{cleaner(section.title)}</h2>
+                    <span className={styles.patternCount}>{section.patterns.length} Patterns</span>
                 </div>
-                <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    <ChevronDown size={20} className="text-muted" />
-                </motion.div>
-            </button>
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                        <div className={styles.sectionContent}>
-                            {section.patterns.map((pattern, idx) => (
-                                <PatternView key={idx} pattern={pattern} />
+                <div className={styles.headerLine} />
+            </div>
+
+            <div className={styles.patternsGrid}>
+                {section.patterns.map((pattern, idx) => (
+                    <div key={idx} className={styles.patternCard}>
+                        <div className={styles.patternHeader}>
+                            <h3 className={styles.patternTitle}>{cleaner(pattern.title)}</h3>
+                        </div>
+                        <div className={styles.problemsList}>
+                            {pattern.problems.map(prob => (
+                                <ProblemRow key={prob._id} problem={prob} />
                             ))}
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.div>
-    );
-}
-
-function PatternView({ pattern }: { pattern: Pattern }) {
-    if (pattern.problems.length === 0) return null;
-
-    return (
-        <div className={styles.patternBlock}>
-            <h3 className={styles.patternTitle}>{pattern.title.replace('Pattern', '').replace(/^\d+:\s*/, '')}</h3>
-            <div className={styles.problemsGrid}>
-                {pattern.problems.map(prob => (
-                    <ProblemCard key={prob._id} problem={prob} />
+                    </div>
                 ))}
             </div>
         </div>
     );
 }
 
-function ProblemCard({ problem }: { problem: Problem }) {
+
+function ProblemRow({ problem }: { problem: Problem }) {
     const [completed, setCompleted] = useState(problem.isCompleted);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleToggle = async () => {
         if (isLoading) return;
         setIsLoading(true);
-        // Optimistic UI
         const newState = !completed;
         setCompleted(newState);
 
         const res = await toggleProblem(problem._id, newState);
         if (!res.success) {
-            setCompleted(!newState); // Revert
+            setCompleted(!newState);
         }
         setIsLoading(false);
     };
 
     return (
-        <div className={`${styles.problemCard} ${completed ? styles.completed : ''}`}>
+        <div className={`${styles.problemRow} ${completed ? styles.completed : ''} ${styles[problem.difficulty?.toLowerCase() || 'medium']}`}>
             <button
                 onClick={handleToggle}
-                className={`${styles.checkBtn} ${completed ? styles.checked : ''}`}
+                className={`${styles.checkbox} ${completed ? styles.checked : ''}`}
                 disabled={isLoading}
             >
-                <motion.div
-                    initial={false}
-                    animate={{ scale: completed ? 1 : 0 }}
-                >
-                    <Check size={16} strokeWidth={3} />
-                </motion.div>
+                {completed && <Check size={14} strokeWidth={4} />}
             </button>
 
-            <div className={styles.cardContent}>
-                <a href={problem.url} target="_blank" rel="noreferrer" className={styles.problemTitle} title={problem.title}>
-                    {problem.title}
-                </a>
-                <div className={styles.meta}>
-                    <span className={`${styles.badge} ${styles[problem.difficulty?.toLowerCase() || 'medium']}`}>
-                        {problem.difficulty || 'Medium'}
-                    </span>
-                </div>
-            </div>
-
-            <a href={problem.url} target="_blank" rel="noreferrer" className={styles.linkIcon}>
-                <ExternalLink size={14} />
+            <a href={problem.url} target="_blank" rel="noreferrer" className={styles.problemLink}>
+                {problem.title}
             </a>
+
+            <div className={styles.rowMeta}>
+                <span className={styles.difficultyLabel}>{problem.difficulty || 'Medium'}</span>
+                <ExternalLink size={14} className={styles.extIcon} />
+            </div>
         </div>
     );
 }
+

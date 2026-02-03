@@ -141,16 +141,6 @@ export default async function Home() {
   const data = await getData(session.user.id);
 
   return (
-    <div className="user-container">
-      <div className="user-welcome animate-fadeIn">
-        <h1>
-          Welcome Back, <span className="text-gradient">{session.user.name || "Coder"}</span>
-        </h1>
-        <p>Let's continue your coding journey and conquer more problems.</p>
-      </div>
-      <div className="animate-slideUp delay-100">
-        <SheetView data={data} />
-      </div>
-    </div>
+    <SheetView data={data} userName={session.user.name || "Coder"} />
   );
 }
