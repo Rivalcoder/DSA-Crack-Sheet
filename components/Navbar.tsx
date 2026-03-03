@@ -20,6 +20,11 @@ export default function Navbar() {
                     <span>DSA Q&A</span>
                 </Link>
 
+                <div className={styles.navLinks}>
+                    <Link href="/" className={styles.navLink}>Byts Problems</Link>
+                    <Link href="/a2z-sheet" className={styles.navLink}>A2Z Sheet</Link>
+                </div>
+
                 <div className={styles.menu}>
                     <ThemeToggle />
                     {session ? (

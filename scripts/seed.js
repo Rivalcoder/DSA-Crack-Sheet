@@ -18,6 +18,8 @@ const ProblemSchema = new mongoose.Schema({
     pattern: { type: String, required: true },
     slug: { type: String, required: true },
     difficulty: { type: String, default: 'Medium' },
+    sheet: { type: String, required: true },
+    orderIndex: { type: Number, default: 0 }
 });
 
 const Problem = mongoose.models.Problem || mongoose.model('Problem', ProblemSchema);
@@ -28,11 +30,10 @@ async function seed() {
         await mongoose.connect(MONGODB_URI);
         console.log('Connected.');
 
-        console.log('Clearing existing problems...');
-        await Problem.deleteMany({});
+        console.log('Clearing existing Strivers 180 problems...');
+        await Problem.deleteMany({ sheet: 'Strivers 180' });
 
-        const filePath = path.join(__dirname, '../inspect_excel.js').replace('inspect_excel.js', '../My Sheet.xlsx'); // Hacky but reliable relative to CWD if usually run from root
-        // Better:
+        // ... (path setup)
         const realPath = path.resolve(__dirname, '../../My Sheet.xlsx');
         console.log('Reading Excel:', realPath);
 
@@ -42,9 +43,8 @@ async function seed() {
 
         let currentSection = 'General';
         let problemsToInsert = [];
+        let globalOrder = 0;
 
-        // Start iterating. We saw headers around row 5.
-        // We will scan all rows.
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
             if (!row || row.length === 0) continue;
@@ -52,29 +52,17 @@ async function seed() {
             const col0 = (row[0] || '').toString().trim();
             const col1 = (row[1] || '').toString().trim();
 
-            // Detect Section
-            // Criteria: col0 exists, col1 is empty, col0 doesn't start with "Pattern" or "Tip"
-            // Also checks if strictly roman numeral start? "I. ", "II. ", "III. "
             if (col0 && !col1 && !col0.startsWith('Pattern') && !col0.startsWith('Tip') && (col0.match(/^[IVX]+\.\s/) || col0.includes('Patterns'))) {
                 currentSection = col0;
-                console.log(`Found Section: ${currentSection}`);
                 continue;
             }
 
-            // Detect Pattern
             if (col0.startsWith('Pattern') && col1) {
                 const patternName = col0;
                 const problemString = col1;
-
-                // Parse problems
-                // Split by comma
-                // Some might have messy spaces or newlines?
-                // "11. Container..., 15. 3Sum"
                 const chunks = problemString.split(',').map(s => s.trim()).filter(s => s);
 
                 for (const chunk of chunks) {
-                    // chunk: "11. Container With Most Water"
-                    // Regex: Start with digits, dot, space, title
                     const match = chunk.match(/^(\d+)\.\s*(.*)$/);
                     if (match) {
                         const pid = parseInt(match[1]);
@@ -82,16 +70,17 @@ async function seed() {
                         const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
                         const url = `https://leetcode.com/problems/${slug}/`;
 
+                        globalOrder++;
                         problemsToInsert.push({
                             title,
                             problemId: pid,
                             url,
                             section: currentSection,
                             pattern: patternName,
-                            slug
+                            slug,
+                            sheet: 'Strivers 180',
+                            orderIndex: globalOrder
                         });
-                    } else {
-                        console.log(`Failed to parse problem chunk: "${chunk}" in pattern "${patternName}"`);
                     }
                 }
             }

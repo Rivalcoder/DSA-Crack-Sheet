@@ -8,52 +8,7 @@ import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import { BrainCircuit, TrendingUp, CirclePile, TreePine, ShieldCheck, ArrowRight, Sparkles, Zap } from "lucide-react";
 
-interface SheetData {
-  title: string;
-  patterns: {
-    title: string;
-    problems: any[];
-  }[];
-}
-
-async function getData(userId: string): Promise<SheetData[]> {
-  try {
-    await dbConnect();
-    const problems = await Problem.find({}).sort({ problemId: 1 }).lean();
-    const user = await User.findById(userId).select("completedProblems").lean();
-
-    const sections: any = {};
-    const userCompleted = (user?.completedProblems || []).map((id: any) => id.toString());
-
-    problems.forEach((p: any) => {
-      const secTitle = p.section || "General";
-      const patTitle = p.pattern || "General";
-
-      if (!sections[secTitle]) {
-        sections[secTitle] = { title: secTitle, patterns: {} };
-      }
-      if (!sections[secTitle].patterns[patTitle]) {
-        sections[secTitle].patterns[patTitle] = { title: patTitle, problems: [] };
-      }
-      sections[secTitle].patterns[patTitle].problems.push({
-        _id: p._id.toString(),
-        id: p.problemId,
-        title: p.title,
-        url: p.url,
-        difficulty: p.difficulty,
-        isCompleted: userCompleted.includes(p._id.toString())
-      });
-    });
-
-    return Object.values(sections).map((sec: any) => ({
-      ...sec,
-      patterns: Object.values(sec.patterns)
-    }));
-  } catch (error) {
-    console.error("DB Fetch Error:", error);
-    return [];
-  }
-}
+import { getSheetData } from "@/lib/data";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -139,9 +94,14 @@ export default async function Home() {
     );
   }
 
-  const data = await getData(session.user.id);
+  const data = await getSheetData(session.user.id, 'Byts Problems');
 
   return (
-    <SheetView data={data} userName={session.user.name || "Coder"} />
+    <SheetView
+      data={data}
+      userName={session.user.name || "Coder"}
+      sheetName="Byts Problems"
+      author={{ name: "Byts", url: "#" }}
+    />
   );
 }

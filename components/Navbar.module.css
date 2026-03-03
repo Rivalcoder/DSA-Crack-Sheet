@@ -45,6 +45,25 @@
     transform: scale(1.02);
 }
 
+.navLinks {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.navLink {
+    color: var(--text-muted);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition-base);
+    font-size: 0.95rem;
+    padding: 0.5rem 0.25rem;
+}
+
+.navLink:hover {
+    color: var(--text-primary);
+}
+
 /* Animated Logo gradient */
 .logo span {
     background: linear-gradient(135deg, var(--primary-light), var(--primary), var(--secondary));
