@@ -641,12 +641,23 @@
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.2s;
+    cursor: pointer;
 }
 
 .problemTitleLink:hover {
     color: var(--primary);
     text-decoration: underline;
     text-underline-offset: 4px;
+}
+
+.problemTitleNoLink {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
 }
 
 .platformTag {
@@ -716,6 +727,32 @@
     align-items: center;
     gap: 0.5rem;
     transition: all 0.2s;
+}
+
+.platformActionBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.platformActionBtn:hover:not(.btnDisabled) {
+    background: var(--bg-hover);
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.btnDisabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    filter: grayscale(1) !important;
+    background: transparent !important;
+    color: var(--text-muted) !important;
 }
 
 /* Controls Bar (Filter/Search) */

@@ -319,12 +319,6 @@ export default function SheetView({ data, userName, sheetName, author }: { data:
                                         <div className={styles.searchAndDiff}>
                                             <div className={styles.difficultySelect}>
                                                 <button
-                                                    className={`${styles.diffFilterBtn} ${difficultyFilter === 'DSA' ? styles.diffActiveDsa : ''}`}
-                                                    onClick={() => setDifficultyFilter(difficultyFilter === 'DSA' ? null : 'DSA')}
-                                                >
-                                                    DSA
-                                                </button>
-                                                <button
                                                     className={`${styles.diffFilterBtn} ${difficultyFilter === 'Easy' ? styles.diffActiveEasy : ''}`}
                                                     onClick={() => setDifficultyFilter(difficultyFilter === 'Easy' ? null : 'Easy')}
                                                 >
@@ -532,6 +526,7 @@ function ProblemRow({ problem, onToggleCompletion }: { problem: Problem, onToggl
     };
 
     const sanitizedUrl = fixUrl(problem.url);
+    const hasUrl = sanitizedUrl !== "#";
     const meta = getMeta(problem.title, sanitizedUrl, problem.id);
 
     return (
@@ -546,23 +541,39 @@ function ProblemRow({ problem, onToggleCompletion }: { problem: Problem, onToggl
                         {completed && <Check size={14} strokeWidth={4} />}
                     </button>
                     <div className={styles.titleWrapper}>
-                        <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={styles.problemTitleLink}>
-                            {problem.title.replace(/^\d+[.:\s]+/, '')}
-                        </a>
+                        {hasUrl ? (
+                            <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={styles.problemTitleLink}>
+                                {problem.title.replace(/^\d+[.:\s]+/, '')}
+                            </a>
+                        ) : (
+                            <span className={styles.problemTitleNoLink} title="Practice link not available">
+                                {problem.title.replace(/^\d+[.:\s]+/, '')}
+                            </span>
+                        )}
                         {meta && <span className={styles.platformTag}>({meta})</span>}
                     </div>
                 </div>
 
                 <div className={styles.rightGroup}>
-                    {problem.yt_url && (
+                    {problem.yt_url && problem.yt_url !== "$undefined" ? (
                         <a href={problem.yt_url} target="_blank" rel="noreferrer" className={styles.ytBtn} title="Video Tutorial">
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" /></svg>
                         </a>
+                    ) : (
+                        <div className={`${styles.ytBtn} ${styles.btnDisabled}`} title="No video available">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" opacity="0.3"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" /></svg>
+                        </div>
                     )}
 
-                    <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={styles.platformActionBtn} title="Solve Problem">
-                        {getPlatformIcon(sanitizedUrl)}
-                    </a>
+                    {hasUrl ? (
+                        <a href={sanitizedUrl} target="_blank" rel="noreferrer" className={styles.platformActionBtn} title="Solve Problem">
+                            {getPlatformIcon(sanitizedUrl)}
+                        </a>
+                    ) : (
+                        <div className={`${styles.platformActionBtn} ${styles.btnDisabled}`} title="Practice link not available">
+                            {getPlatformIcon("#")}
+                        </div>
+                    )}
 
                     <div className={styles.rightGroupActions}>
                         <button
