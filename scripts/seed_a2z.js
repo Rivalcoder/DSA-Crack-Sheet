@@ -34,7 +34,7 @@ async function seed() {
         console.log('Clearing existing A2Z problems...');
         await Problem.deleteMany({ sheet: 'Striver A2Z' });
 
-        const dataPath = path.join(__dirname, '../striver_a2z_final.json');
+        const dataPath = path.join(__dirname, '../data/striver_a2z_final.json');
         console.log('Reading JSON:', dataPath);
 
         const rawData = fs.readFileSync(dataPath, 'utf8');
